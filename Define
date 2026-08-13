@@ -1,0 +1,53 @@
+Define — Conecta Local
+
+1. Persona
+
+ 
+A primeira persona:
+ **Contexto: Morador da cidade procurando algum produto/serviço/comércio**
+ **Objetivo: Encontrar algum lugar próximo, dentro da própria cidade ou do próprio bairro** 
+ **Dores: Ao pesquisar, a ferramenta sugere lugares distantes e não conhece comércios mais próximos** 
+A segunda persona:
+ **Contexto: Micro Empreendedor tem um pequeno negócio em sua cidade**
+ **Objetivo: Ganhar visibilidade digital e ser sugerido em ferramentas de busca**
+ ** Dores: Fica invisível para quem precisa de seu produto/serviço, mesmo próximo de seus potenciais clientes**
+---
+2. Problem statement
+
+ O morador local precisa encontrar produtos, serviços e comércios na sua própria cidade porque é mais rápido, prático e muitas vezes mais baratos do que recorrer a opções distantes, mas hoje não tem uma forma centralizada de buscá-los e muitos não tem uma presença digital forte, não aparecendo nos resultados de busca** 
+
+
+---
+3. Escopo do MVP
+
+> ** Must (essencial) **
+> - Tecnologia de Detecção Geográfica Hiperlocal
+> - Foco em pequenos negócios/ pouco visíveis 
+> - Ponte direta para descoberta das redes sociais do empreendedor 
+
+> **Should (importante)**
+> - Dashboard de projetos/movimentações para o empreendedor
+> - Perfil da empresa completo/rico 
+> - Chat interno 
+
+> **Could (desejável)**
+> - Interface organizada
+> - Filtros de busca avançados 
+> - Lista de lugares favoritos ou frequentados 
+---
+
+4. User stories:
+> 1. Como morador local que precisa encontrar um comércio próximo, eu quero que o app utilize minha localização em tempo real, para que eu encontre o comércio ou serviço mais próximo de mim sem precisar procurar manualmente.
+> 2. Como pequeno empreendedor local, eu quero cadastrar meu negócio no app com informações básicas e localização, para que moradores da minha cidade possam me encontrar mesmo sem eu ter presença digital forte.
+> 3. Como morador local interessado em um comércio, eu quero ser direcionado para o WhatsApp ou Instagram do empreendedor, para que eu possa tirar dúvidas ou fechar negócio sem sair da minha rede social de preferência.
+
+---
+Checklist antes do push
+[x] O arquivo se chama `define.md` e está na raiz do repositório do grupo
+[x] Os blocos de exemplo do CaronaPUC e o bloco de instruções foram apagados
+[x] As quatro partes estão preenchidas
+[x] O problem statement tem os quatro pedaços: persona, necessidade, motivo e lacuna
+[x] Existe uma user story para cada item Must — nem a mais, nem a menos
+[x] As três categorias do escopo têm conteúdo (se tudo virou Must, o recorte não foi feito)
+[x] Lendo do começo ao fim, as quatro partes falam do mesmo produto
+[ ] Commit feito e enviado para o GitHub
