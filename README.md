@@ -1,4 +1,8 @@
-# conectalocal
+# Conecta Local
+Julie Inês Rodrigues Souza 25021611
+Mario Sérgio Lima Borges 25000500
+
+# Descrição
 O Conecta Local é um aplicativo mobile que conecta moradores a pequenos negócios e prestadores de serviços de baixa visibilidade em seu bairro, direcionando-os diretamente para os canais de contato (redes sociais) que esses empreendedores já usam no dia a dia.
 
 
