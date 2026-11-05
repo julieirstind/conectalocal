@@ -1,0 +1,211 @@
+import 'package:flutter/material.dart';
+
+// Cores tiradas do print do Figma (ajuste com o conta-gotas do Figma se quiser exatidão)
+const Color corTitulo = Color(0xFF3FA79D);
+const Color corFundoBotao = Color(0xFFB8DEDB); // verde-água claro (antes era cinza E0E0E0)
+const Color corFundoTela = Color(0xFFFAFAFA);
+const Color corTexto = Color(0xFF1E1E1E);
+const String avisoSemTela = "Funcionalidade em breve";
+const String fotoUrl =
+    'https://m.media-amazon.com/images/M/MV5BYjYwZmE0MGQtZjkzNS00ZmE2LWFlYjgtYzZhZDZjZDNjNzE0XkEyXkFqcGc@._V1_.jpg';
+
+void main() => runApp(const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: LocalizacaoScreen(),
+    ));
+
+void _aviso(BuildContext context, String mensagem) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(mensagem)),
+  );
+}
+
+class LocalizacaoScreen extends StatelessWidget {
+  const LocalizacaoScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final alturaMapa = MediaQuery.of(context).size.height * 0.57;
+
+    return Scaffold(
+      backgroundColor: corFundoTela,
+      // Largura máxima de celular: no navegador a tela fica do tamanho do Figma
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 390),
+          child: Column(
+            children: [
+              SizedBox(height: alturaMapa, child: _mapa(context)),
+              _enderecoComFoto(),
+              const SizedBox(height: 20),
+              _botao(context, 'Abrir no Maps'),
+              const SizedBox(height: 18),
+              _botao(context, 'Comércio Local'),
+              const Spacer(),
+              _barraInferior(context),
+              const SizedBox(height: 40),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Mapa com círculo rosa, pino vermelho e cabeçalho por cima
+  Widget _mapa(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Image.asset(
+            'assets/mapa.png',
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => Container(color: const Color(0xFFE9E9E9)),
+          ),
+        ),
+        Center(
+          child: Container(
+            width: 190,
+            height: 190,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color(0x66FF8A8A),
+            ),
+          ),
+        ),
+        const Center(
+          child: Icon(Icons.location_on, size: 44, color: Color(0xFFE53935)),
+        ),
+        // Cabeçalho: seta de voltar + título, com degradê branco no topo
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFFFAFAFA), Color(0x00FAFAFA)],
+            ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: SizedBox(
+              height: 56,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new,
+                          color: corTitulo, size: 22),
+                      onPressed: () => Navigator.maybePop(context),
+                    ),
+                  ),
+                  const Text(
+                    'Localização',
+                    style: TextStyle(
+                      color: corTitulo,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Foto circular + endereço em duas linhas (Expanded evita o overflow)
+  Widget _enderecoComFoto() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipOval(
+            child: SizedBox(
+              width: 76,
+              height: 76,
+              child: Image.network(
+                fotoUrl,
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
+                // Se o link não carregar, usa a foto salva no projeto
+                errorBuilder: (_, __, ___) => Image.asset(
+                  'assets/foto.png',
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topCenter,
+                  errorBuilder: (_, __, ___) =>
+                      Container(color: const Color(0xFFD9D9D9)),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          const Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(top: 14),
+              child: Text(
+                'Rua Sattore, 234 - Bairro Cambuí\nCampinas, SP - 13010-020',
+                style: TextStyle(fontSize: 12, color: corTexto, height: 1.3),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Botão em pílula verde-água. Troque o onTap pelo que você já tinha.
+  Widget _botao(BuildContext context, String texto) {
+    return FractionallySizedBox(
+      widthFactor: 0.63,
+      child: SizedBox(
+        height: 44,
+        child: Material(
+          color: corFundoBotao,
+          shape: const StadiumBorder(),
+          child: InkWell(
+            customBorder: const StadiumBorder(),
+            onTap: () => _aviso(context, avisoSemTela),
+            child: Center(
+              child: Text(texto,
+                  style: const TextStyle(fontSize: 18, color: corTexto)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _barraInferior(BuildContext context) {
+    Widget item(IconData icone) => Expanded(
+          child: InkWell(
+            onTap: () => _aviso(context, avisoSemTela),
+            child: Center(
+              child: Icon(icone, size: 24, color: corTexto),
+            ),
+          ),
+        );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 46),
+      child: Material(
+        color: corFundoBotao,
+        borderRadius: BorderRadius.circular(22),
+        child: SizedBox(
+          height: 44,
+          child: Row(
+            children: [
+              item(Icons.home_outlined),
+              item(Icons.chat_bubble_outline),
+              item(Icons.person_outline),
+              item(Icons.calendar_today_outlined),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
