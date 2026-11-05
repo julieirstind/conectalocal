@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // Cores tiradas do print do Figma (ajuste com o conta-gotas do Figma se quiser exatidão)
 const Color corTitulo = Color(0xFF3FA79D);
 const Color corFundoBotao = Color(0xFFB8DEDB); // verde-água claro (antes era cinza E0E0E0)
 const Color corFundoTela = Color(0xFFFAFAFA);
 const Color corTexto = Color(0xFF1E1E1E);
-const String avisoSemTela = "Funcionalidade em breve";
+const String avisoSemTela = "Tela ainda não disponível";
+const String enderecoBusca =
+    'Rua Sattore, 234 - Bairro Cambuí, Campinas, SP, 13010-020';
+const String fotoUrl =
+    'https://m.media-amazon.com/images/M/MV5BYjYwZmE0MGQtZjkzNS00ZmE2LWFlYjgtYzZhZDZjZDNjNzE0XkEyXkFqcGc@._V1_.jpg';
 
 void main() => runApp(const MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -18,6 +23,18 @@ void _aviso(BuildContext context, String mensagem) {
   );
 }
 
+// Abre o Google Maps com a busca do endereço
+Future<void> _abrirMaps(BuildContext context) async {
+  final uri = Uri.https('www.google.com', '/maps/search/', {
+    'api': '1',
+    'query': enderecoBusca,
+  });
+  final abriu = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  if (!abriu && context.mounted) {
+    _aviso(context, 'Não foi possível abrir o Google Maps');
+  }
+}
+
 class LocalizacaoScreen extends StatelessWidget {
   const LocalizacaoScreen({super.key});
 
@@ -27,18 +44,24 @@ class LocalizacaoScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: corFundoTela,
-      body: Column(
-        children: [
-          SizedBox(height: alturaMapa, child: _mapa(context)),
-          _enderecoComFoto(),
-          const SizedBox(height: 20),
-          _botao(context, 'Abrir no Maps'),
-          const SizedBox(height: 18),
-          _botao(context, 'Comércio Local'),
-          const Spacer(),
-          _barraInferior(context),
-          const SizedBox(height: 40),
-        ],
+      // Largura máxima de celular: no navegador a tela fica do tamanho do Figma
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 390),
+          child: Column(
+            children: [
+              SizedBox(height: alturaMapa, child: _mapa(context)),
+              _enderecoComFoto(),
+              const SizedBox(height: 20),
+              _botao(context, 'Abrir no Maps', () => _abrirMaps(context)),
+              const SizedBox(height: 18),
+              _botao(context, 'Comércio Local', () => _aviso(context, avisoSemTela)),
+              const Spacer(),
+              _barraInferior(context),
+              const SizedBox(height: 40),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -88,7 +111,7 @@ class LocalizacaoScreen extends StatelessWidget {
                     child: IconButton(
                       icon: const Icon(Icons.arrow_back_ios_new,
                           color: corTitulo, size: 22),
-                      onPressed: () => Navigator.maybePop(context),
+                      onPressed: () => _aviso(context, avisoSemTela),
                     ),
                   ),
                   const Text(
@@ -115,11 +138,24 @@ class LocalizacaoScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            radius: 38,
-            backgroundColor: const Color(0xFFD9D9D9),
-            backgroundImage: const AssetImage('assets/foto.png'),
-            onBackgroundImageError: (_, __) {},
+          ClipOval(
+            child: SizedBox(
+              width: 76,
+              height: 76,
+              child: Image.network(
+                fotoUrl,
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
+                // Se o link não carregar, usa a foto salva no projeto
+                errorBuilder: (_, __, ___) => Image.asset(
+                  'assets/foto.png',
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topCenter,
+                  errorBuilder: (_, __, ___) =>
+                      Container(color: const Color(0xFFD9D9D9)),
+                ),
+              ),
+            ),
           ),
           const SizedBox(width: 8),
           const Expanded(
@@ -137,7 +173,7 @@ class LocalizacaoScreen extends StatelessWidget {
   }
 
   // Botão em pílula verde-água. Troque o onTap pelo que você já tinha.
-  Widget _botao(BuildContext context, String texto) {
+  Widget _botao(BuildContext context, String texto, VoidCallback aoTocar) {
     return FractionallySizedBox(
       widthFactor: 0.63,
       child: SizedBox(
@@ -147,7 +183,7 @@ class LocalizacaoScreen extends StatelessWidget {
           shape: const StadiumBorder(),
           child: InkWell(
             customBorder: const StadiumBorder(),
-            onTap: () => _aviso(context, avisoSemTela),
+            onTap: aoTocar,
             child: Center(
               child: Text(texto,
                   style: const TextStyle(fontSize: 18, color: corTexto)),
