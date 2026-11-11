@@ -1,0 +1,213 @@
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'constantes.dart';
+import 'perfil_screen.dart';
+
+const String enderecoBusca =
+    'Rua Sattore, 234 - Bairro Cambuí, Campinas, SP, 13010-020';
+const String fotoUrl =
+    'https://m.media-amazon.com/images/M/MV5BYjYwZmE0MGQtZjkzNS00ZmE2LWFlYjgtYzZhZDZjZDNjNzE0XkEyXkFqcGc@._V1_.jpg';
+
+void main() => runApp(const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: LocalizacaoScreen(),
+    ));
+
+// Abre o Google Maps com a busca do endereço
+Future<void> _abrirMaps(BuildContext context) async {
+  final uri = Uri.https('www.google.com', '/maps/search/', {
+    'api': '1',
+    'query': enderecoBusca,
+  });
+  final abriu = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  if (!abriu && context.mounted) {
+    mostrarAviso(context, 'Não foi possível abrir o Google Maps');
+  }
+}
+
+class LocalizacaoScreen extends StatelessWidget {
+  const LocalizacaoScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final alturaMapa = MediaQuery.of(context).size.height * 0.57;
+
+    return Scaffold(
+      backgroundColor: corFundoTela,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 390),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 24),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: alturaMapa, child: _mapa(context)),
+                  _enderecoComFoto(),
+                  const SizedBox(height: 20),
+                  _botao('Abrir no Maps', () => _abrirMaps(context)),
+                  const SizedBox(height: 18),
+                  _botao(
+                    'Comércio Local',
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const PerfilScreen()),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  _barraInferior(context),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _mapa(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned.fill(child: imagemOuCinza('assets/mapa.png')),
+        Center(
+          child: Container(
+            width: 190,
+            height: 190,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color(0x66FF8A8A),
+            ),
+          ),
+        ),
+        const Center(
+          child: Icon(Icons.location_on, size: 44, color: Color(0xFFE53935)),
+        ),
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFFFAFAFA), Color(0x00FAFAFA)],
+            ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: SizedBox(
+              height: 56,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new,
+                          color: corTitulo, size: 22),
+                      onPressed: () => mostrarAviso(context),
+                    ),
+                  ),
+                  const Text(
+                    'Localização',
+                    style: TextStyle(
+                      color: corTitulo,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _enderecoComFoto() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipOval(
+            child: SizedBox(
+              width: 76,
+              height: 76,
+              child: Image.network(
+                fotoUrl,
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
+                errorBuilder: (_, __, ___) =>
+                    imagemOuCinza('assets/foto.png', icone: Icons.person),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          const Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(top: 14),
+              child: Text(
+                'Rua Sattore, 234 - Bairro Cambuí\nCampinas, SP - 13010-020',
+                style: TextStyle(fontSize: 12, color: corTexto, height: 1.3),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _botao(String texto, VoidCallback aoTocar) {
+    return FractionallySizedBox(
+      widthFactor: 0.63,
+      child: SizedBox(
+        height: 44,
+        child: Material(
+          color: corFundoBotao,
+          shape: const StadiumBorder(),
+          child: InkWell(
+            customBorder: const StadiumBorder(),
+            onTap: aoTocar,
+            child: Center(
+              child: Text(texto,
+                  style: const TextStyle(fontSize: 18, color: corTexto)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _barraInferior(BuildContext context) {
+    Widget item(IconData icone) => Expanded(
+          child: InkWell(
+            onTap: () => mostrarAviso(context),
+            child: Center(child: Icon(icone, size: 24, color: corTexto)),
+          ),
+        );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 46),
+      child: Material(
+        color: corFundoBotao,
+        borderRadius: BorderRadius.circular(22),
+        child: SizedBox(
+          height: 44,
+          child: Row(
+            children: [
+              item(Icons.home_outlined),
+              item(Icons.chat_bubble_outline),
+              item(Icons.person_outline),
+              item(Icons.calendar_today_outlined),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

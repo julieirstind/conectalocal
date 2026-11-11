@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Conecta Local
 Julie Inês Rodrigues Souza 25021611
 Mario Sérgio Lima Borges 25000500
@@ -25,3 +26,22 @@ O Conecta Local é um aplicativo mobile que conecta moradores a pequenos negóci
 **O que funciona bem: Permite calcular rotas em tempo real e streetview em 360° graus**
 **O que é frustrante: Podem haver negócios fantasmas com ficha no google, além do GPS muitas vezes sugerir caminhos perigosos visando economizar tempo**
 **Ideia de melhoria: Atualização em tempo real de mudanças em rotas, além de filtro de segurança para evitar falsos negócios locais**
+=======
+# conectalocal
+
+A new Flutter project.
+
+## Getting Started
+
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
+- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
+>>>>>>> 31673c2 (feat: implementa telas de localizacao, perfil e rota)
